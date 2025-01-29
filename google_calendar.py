@@ -1,17 +1,21 @@
 from datetime import datetime
 import os.path
+import os
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Google Calendar API scope
 SCOPES = ["https://www.googleapis.com/auth/calendar"]
 
-def init(development=True):
+def init():
     """Authenticate and initialize the Google Calendar API service."""
     creds = None
-    if development:
+    if os.getenv("DEVELOPMENT"):
         # Check if token.json exists for saved credentials
         if os.path.exists("token.json"):
             creds = Credentials.from_authorized_user_file("token.json", SCOPES)
