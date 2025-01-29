@@ -1,0 +1,26 @@
+name: Run Google Calendar Script Weekly
+
+on:
+  schedule:
+    - cron: '0 7 * * 1'  # Runs every Monday at 07:00 UTC (08:00 CET, 09:00 CEST)
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Create service account JSON
+        run: echo '${{ secrets.GCP_SERVICE_ACCOUNT }}' > service_account.json
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt  # If needed
+
+      - name: Run script
+        run: python script.py
