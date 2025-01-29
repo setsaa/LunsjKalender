@@ -12,10 +12,10 @@ load_dotenv()
 # Google Calendar API scope
 SCOPES = ["https://www.googleapis.com/auth/calendar"]
 
-def init():
+def init(development=False):
     """Authenticate and initialize the Google Calendar API service."""
     creds = None
-    if os.getenv("DEVELOPMENT"):
+    if development:
         # Check if token.json exists for saved credentials
         if os.path.exists("token.json"):
             creds = Credentials.from_authorized_user_file("token.json", SCOPES)
