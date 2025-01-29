@@ -1,5 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 from time import sleep
 import re
 
@@ -16,8 +17,18 @@ pattern = r"(Dagens:.*?)(?=\s*(?:Vegetar dagens:|Vegetar:|Suppe|$))|(Vegetar dag
 def scrape_menu():
     menu_json = {}
 
-    # Setup WebDriver
-    driver = webdriver.Chrome()
+    # Set up Chrome options
+    options = Options()
+    options.add_argument("--headless")  # Run in headless mode (no UI)
+    options.add_argument("--disable-gpu")  # Disable GPU (required for headless)
+    options.add_argument("--no-sandbox")  # For CI environments like GitHub Actions
+    
+    # Create a temporary directory for the user data
+    temp_dir = tempfile.mkdtemp()
+    options.add_argument(f"--user-data-dir={temp_dir}")  # Set custom user data dir
+
+    # Setup WebDriver with custom options
+    driver = webdriver.Chrome(options=options)
     url = "https://tullin.munu.shop/meny"
     driver.get(url)
 
