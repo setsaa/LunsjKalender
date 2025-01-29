@@ -1,0 +1,5 @@
+/.DS_Store
+/.venv
+/credentials.json
+/service_account.json
+/token.json
