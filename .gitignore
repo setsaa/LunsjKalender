@@ -1,5 +1,8 @@
 /.DS_Store
 /.venv
+/.vscode
+/.pytest_cache
+/.env
 /credentials.json
 /service_account.json
 /token.json
