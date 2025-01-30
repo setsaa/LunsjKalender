@@ -12,8 +12,8 @@ def add_menu_to_cal():
         calendar_api.create_event(
             summary=menu["Dagens"],
             description=f"Dagens: {menu['Dagens']}\nVegetar: {menu['Vegetar dagens']}\nSuppe: {menu['Suppe']}",
-            start_time=get_day_date(day, hour=11, minute=30),
-            end_time=get_day_date(day, hour=12, minute=0)
+            start_time=get_day_date(day, hour=11, minute=00),
+            end_time=get_day_date(day, hour=11, minute=30)
         )
 
 def get_day_date(day_name, hour, minute):
