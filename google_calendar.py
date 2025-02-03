@@ -57,7 +57,8 @@ class GCal:
                 ],
             },
         }
-        event_result = self.service.events().insert(calendarId="primary", body=event).execute()
+        calendar_id = "sigurdsets@gmail.com"
+        event_result = self.service.events().insert(calendarId=calendar_id, body=event).execute()
         print("Event created:", event_result.get("htmlLink"))
 
 def get_current_time():
