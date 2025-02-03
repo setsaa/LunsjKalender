@@ -52,16 +52,18 @@ class WebScraper:
                 # If there are 2 menu items it is likely a "veggie day" at the
                 # cantina. `veggie_index` is then set accordingly as the first
                 # menu item will be both the "daily" and the "veggie" option.
-                if len(menu_items) == 2:
+                if len(menu_items) == 2:  # veggie day
                     veggie_index = 0
+                    soup_index = 1
                 elif len(menu_items) < 2:
                     raise Exception(f"Error: Unexpected number of menu items for {day}. Found: {menu_text}")
                 else:
                     veggie_index = 1
+                    soup_index = 2
                 menu_dict = {
                     "Dagens": str(menu_items[0]).split(":")[1].strip(),
                     "Vegetar dagens": str(menu_items[veggie_index]).split(":")[1].strip(),
-                    "Suppe": str(menu_items[2]).split(":")[1].strip()
+                    "Suppe": str(menu_items[soup_index]).split(":")[1].strip()
                 }
                 menu_json[day] = menu_dict
             except Exception as e:
