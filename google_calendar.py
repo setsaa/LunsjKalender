@@ -9,6 +9,7 @@ from googleapiclient.discovery import build
 
 # Google Calendar API scope
 SCOPES = ["https://www.googleapis.com/auth/calendar"]
+CALENDAR_ID = "sigurdsets@gmail.com"
 
 def init(development=False):
     """Authenticate and initialize the Google Calendar API service."""
@@ -33,33 +34,50 @@ def init(development=False):
     return build("calendar", "v3", credentials=creds)
 
 class GCal:
+    
     def __init__(self):
         self.service = init()
+    
+    def event_exists(self, summary: str, start_time, end_time) -> bool:
+        """Check if an event with a given summary already exists."""
+        events_result = self.service.events().list(
+            calendarId=CALENDAR_ID,
+            timeMin=start_time,
+            timeMax=end_time,
+            singleEvents=True,
+            orderBy="startTime"
+        )
+        events_result.execute()
+        events = events_result.get("items", [])
+        return any(event["summary"] == summary for event in events)
+
 
     def create_event(self, summary: str, description: str, start_time, end_time, reminder_len=10):
         """Create and insert a Google Calendar event."""
-        event = {
-            "summary": summary,
-            "location": "Online",
-            "description": description,
-            "start": {
-                "dateTime": start_time,
-                "timeZone": "Europe/Oslo",
-            },
-            "end": {
-                "dateTime": end_time,
-                "timeZone": "Europe/Oslo",
-            },
-            "reminders": {
-                "useDefault": False,
-                "overrides": [
-                    {"method": "popup", "minutes": reminder_len},
-                ],
-            },
-        }
-        calendar_id = "sigurdsets@gmail.com"
-        event_result = self.service.events().insert(calendarId=calendar_id, body=event).execute()
-        print("Event created:", event_result.get("htmlLink"))
+        if not self.event_exists(summary, start_time, end_time):
+            event = {
+                "summary": summary,
+                "location": "Online",
+                "description": description,
+                "start": {
+                    "dateTime": start_time,
+                    "timeZone": "Europe/Oslo",
+                },
+                "end": {
+                    "dateTime": end_time,
+                    "timeZone": "Europe/Oslo",
+                },
+                "reminders": {
+                    "useDefault": False,
+                    "overrides": [
+                        {"method": "popup", "minutes": reminder_len},
+                    ],
+                },
+            }
+            event_result = self.service.events().insert(calendarId=CALENDAR_ID, body=event).execute()
+            print("Event created:", event_result.get("htmlLink"))
+        else:
+            print("Event already exists. Skipping creation.")
 
 def get_current_time():
     """Get the current time in ISO format."""
