@@ -41,8 +41,8 @@ def convert_to_iso(day_name: str, hour: int, minute: int) -> str:
 
     oslo_tz = pytz.timezone("Europe/Oslo")
     target_datetime = oslo_tz.localize(target_date.replace(hour=hour, minute=minute, second=0, microsecond=0))
-    
+
     return target_datetime.isoformat()
 
 if __name__ == "__main__":
-    print(f'{START_TIME[0]} {START_TIME[1]}')
+    run()
