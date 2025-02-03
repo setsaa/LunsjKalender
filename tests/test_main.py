@@ -1,4 +1,4 @@
-from main import add_menu_to_cal, get_day_date
+from main import add_menu_to_cal, convert_to_iso
 from unittest.mock import MagicMock, patch
 from datetime import datetime
 
@@ -37,6 +37,6 @@ def test_get_day_date(mocker):
     mock_datetime.side_effect = lambda *args, **kwargs: datetime(*args, **kwargs)
 
     # Test for Tuesday
-    result = get_day_date("tirsdag", hour=11, minute=30)
+    result = convert_to_iso("tirsdag", hour=11, minute=30)
     expected = datetime(2023, 10, 3, 11, 30).isoformat()
     assert result == expected
