@@ -49,14 +49,18 @@ class WebScraper:
                 menu_items = re.findall(pattern, menu_text)
                 menu_items = [item for group in menu_items for item in group if item]
 
-                # Skip if we have the expected number of menu items
-                if len(menu_items) != 3:
-                    print(f"Warning: Unexpected number of menu items for {day}. Found: {menu_items}")
-                    continue
-
+                # If there are 2 menu items it is likely a "veggie day" at the
+                # cantina. `veggie_index` is then set accordingly as the first
+                # menu item will be both the "daily" and the "veggie" option.
+                if len(menu_items) == 2:
+                    veggie_index = 0
+                elif len(menu_items) < 2:
+                    raise Exception(f"Error: Unexpected number of menu items for {day}. Found: {menu_text}")
+                else:
+                    veggie_index = 1
                 menu_dict = {
                     "Dagens": str(menu_items[0]).split(":")[1].strip(),
-                    "Vegetar dagens": str(menu_items[1]).split(":")[1].strip(),
+                    "Vegetar dagens": str(menu_items[veggie_index]).split(":")[1].strip(),
                     "Suppe": str(menu_items[2]).split(":")[1].strip()
                 }
                 menu_json[day] = menu_dict
