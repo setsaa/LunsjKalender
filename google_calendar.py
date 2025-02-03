@@ -34,7 +34,7 @@ def init(development=False):
     return build("calendar", "v3", credentials=creds)
 
 class GCal:
-    
+
     def __init__(self):
         self.service = init()
     
@@ -46,8 +46,8 @@ class GCal:
             timeMax=end_time,
             singleEvents=True,
             orderBy="startTime"
-        )
-        events_result.execute()
+        ).execute()
+
         events = events_result.get("items", [])
         return any(event["summary"] == summary for event in events)
 
