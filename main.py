@@ -11,7 +11,7 @@ scraper = WebScraper()
 
 def add_menu_to_cal():
     try:
-        menu_json = WebScraper.scrape_menu()
+        menu_json = scraper.scrape_menu()
         print("Fetched menu:", menu_json)
 
         for day, menu in menu_json.items():
