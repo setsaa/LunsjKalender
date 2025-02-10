@@ -12,8 +12,12 @@ scraper = WebScraper()
 
 def run():
     try:
-        menu_json = scraper.scrape_menu()
+        menu_json = scraper.get_menu()
         print("Fetched menu:", menu_json)
+        
+        if not scraper.get_week_number() == get_current_week_number():
+            print("The menu for this week hasn't been updated. Exiting early.")
+            sys.exit(0)
 
         for day, menu in menu_json.items():
             try:
@@ -30,6 +34,9 @@ def run():
     except Exception as e:
         print(f"Error fetcing menu: {e}")
         sys.exit(1)
+
+def get_current_week_number() -> int:
+    return datetime.now().isocalendar()[1]
 
 def convert_to_iso(day_name: str, hour: int, minute: int) -> str:
     """Convert a given time and day to ISO format with a timezone."""

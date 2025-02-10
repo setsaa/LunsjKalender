@@ -14,7 +14,7 @@ WEEKDAYS = [
 ]
 
 pattern = r"(Dagens:.*?)(?=\s*(?:Vegetar dagens:|Vegetar:|Suppe|$))|(Vegetar dagens:.*?|Vegetar:.*?)(?=\s*(?:Suppe|$))|(Suppe:.*)"
-
+cookie_pattern = r"(Suppe:.*?)(Personvern|Salgsbetingelser|Logg inn|Vi bruker cookies).*"
 class WebScraper:
 
     def __init__(self):
@@ -28,10 +28,9 @@ class WebScraper:
 
         self.driver = webdriver.Chrome(options=options)
         self.url = "https://tullin.munu.shop/meny"
+        self.website_text = self._scrape_menu()
 
-    def scrape_menu(self) -> dict:
-        menu_json = {}
-        
+    def _scrape_menu(self) -> str:
         self.driver.get(self.url)
 
         sleep(1)  # Avoid race condition
@@ -39,9 +38,14 @@ class WebScraper:
         website_text = self.driver.find_element(By.TAG_NAME, "body").text
 
         # Remove cookie policy text using regex
-        website_text = re.sub(r"(Suppe:.*?)(Personvern|Salgsbetingelser|Logg inn|Vi bruker cookies).*", r"\1", website_text, flags=re.DOTALL)
+        website_text = re.sub(pattern=cookie_pattern, repl=r"\1", string=website_text, flags=re.DOTALL)
         
-        sorted_text = split_span(website_text)
+        return website_text
+    
+    def get_menu(self) -> dict:
+        menu_json = {}
+
+        sorted_text = _split_span(self.website_text)
 
         for day, menu_text in sorted_text.items():
             try:
@@ -72,8 +76,17 @@ class WebScraper:
 
         self.driver.quit()
         return menu_json
+    
+    def get_week_number(self) -> int:
+        match = re.search(r"Uke:\s+(\d+)", self.website_text)
+        print(f"Scraped week number: {int(match.group(1)) if match else None}")
+        week_number = int(match.group(1)) if match else None
+        if week_number:
+            return week_number
+        else:
+            raise Exception("WeekNumberNotFoundError")
 
-def split_span(span: str) -> dict:
+def _split_span(span: str) -> dict:
     """Take the span text found on the website and split it into a dict.
     The dict should have each day of the week and it's raw contents.
     """
