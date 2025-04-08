@@ -37,7 +37,7 @@ class GCal:
 
     def __init__(self):
         self.service = init()
-    
+
     def event_exists(self, summary: str, start_time, end_time) -> bool:
         """Check if an event with a given summary already exists."""
         events_result = self.service.events().list(
@@ -52,7 +52,7 @@ class GCal:
         return any(event["summary"] == summary for event in events)
 
 
-    def create_event(self, summary: str, description: str, start_time, end_time, reminder_len=10):
+    def create_event(self, summary: str, description: str, start_time, end_time):
         """Create and insert a Google Calendar event."""
         if not self.event_exists(summary, start_time, end_time):
             event = {
@@ -66,13 +66,7 @@ class GCal:
                 "end": {
                     "dateTime": end_time,
                     "timeZone": "Europe/Oslo",
-                },
-                "reminders": {
-                    "useDefault": False,
-                    "overrides": [
-                        {"method": "popup", "minutes": reminder_len},
-                    ],
-                },
+                }
             }
             event_result = self.service.events().insert(calendarId=CALENDAR_ID, body=event).execute()
             print("Event created:", event_result.get("htmlLink"))
