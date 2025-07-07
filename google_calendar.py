@@ -66,7 +66,10 @@ class GCal:
                 "end": {
                     "dateTime": end_time,
                     "timeZone": "Europe/Oslo",
-                }
+                },
+		"reminders": {
+		    "useDefault": False,
+		    "overrides": []
             }
             event_result = self.service.events().insert(calendarId=CALENDAR_ID, body=event).execute()
             print("Event created:", event_result.get("htmlLink"))
