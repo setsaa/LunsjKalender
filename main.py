@@ -14,7 +14,7 @@ def run():
     try:
         menu_json = scraper.get_menu()
         print("Fetched menu:", menu_json)
-        
+
         if not scraper.get_week_number() == get_current_week_number():
             print("The menu for this week hasn't been updated. Exiting early.")
             sys.exit(0)
@@ -30,7 +30,7 @@ def run():
                 print(f"Event created for {day}.")
             except Exception as e:
                 print(f"Failed to create event for {day}: {e}")
-    
+
     except Exception as e:
         print(f"Error fetcing menu: {e}")
         sys.exit(1)
